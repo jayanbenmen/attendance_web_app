@@ -1,0 +1,100 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <title>Home</title>
+    {% tailwind_css %}
+</head>
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">Home</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href="{% url 'teacherhome' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+            <li><a href="{% url 'teacher_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+            <li><a href="{% url 'teacher_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>            
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+    <div class="relative flex-1 p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-55" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10">
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-md w-full mx-auto">
+                <h1 class="font-bold text-2xl md:text-3xl text-center mb-4">Attendance Table</h1>    
+                <form method="post" id="calendar-form">
+                    {% csrf_token %}  
+                    <div class="form-control font-bold text-lg text-center">
+                        {{ form }}
+                    </div>
+                </form>
+
+                <!-- Make table responsive -->
+                <div class="overflow-x-auto w-full mt-6">
+                    <table class="min-w-full table-auto border-collapse border border-gray-300">
+                        <thead>
+                            <tr class="bg-gray-200 text-gray-900">
+                                <th class="border border-gray-400 px-4 py-2 font-semibold">Courses</th>
+                                {% for date in dates %}
+                                    <th class="border border-gray-400 px-2 py-2 text-sm font-semibold">{{ date|date:"d" }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr class="odd:bg-gray-50 even:bg-white hover:bg-gray-100 transition">
+                                <td class="border border-gray-400 px-4 py-2 font-semibold">{{ course.course_code }}</td>
+                                {% for date in dates %}
+                                    <td class="border border-gray-400 px-2 py-2 text-center">
+                                        {% with formatted_date=date|date:"Y-m-d" %}
+                                            {% for record in attendance_data %}
+                                                {% if record.course_id == course.course_id and record.date == formatted_date %}
+                                                    {{ record.status }} 
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endwith %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>  
+</body>
+</html>
+
+<script>
+    // Toggle the sidebar visibility when the button is clicked
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+    
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');  // Toggle the 'hidden' class to show/hide sidebar
+    });
+
+    document.addEventListener('change', function() {
+        document.getElementById('calendar-form').submit();  // Automatically submit the form
+    });
+</script>

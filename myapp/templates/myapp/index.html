@@ -1,0 +1,72 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    {% tailwind_css %}
+</head>
+<body class="min-h-screen flex items-center justify-center bg-cover bg-center" style="background-image: url('{% static 'images/pillars.jpg' %}');">
+
+  {% if messages %}
+  <div id="message-container" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-lg px-6 py-3 rounded-md shadow-lg z-50 text-center">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <!-- Login Card -->
+  <div class="relative bg-white bg-opacity-80 shadow-2xl p-6 md:p-8 rounded-lg w-full max-w-sm md:max-w-md lg:max-w-lg text-center">
+      
+      <!-- Floating Logo -->
+      <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 rounded-full shadow-md">
+          <img src="{% static 'images/adnu_logo.png' %}" alt="Logo" class="w-24 md:w-28 mx-auto">
+      </div>
+
+      <h1 class="text-xl md:text-2xl mt-12 font-bold text-black">ADNU NFC Attendance</h1>
+      
+      <form method="post" action="">
+        {% csrf_token %}
+        <div class="mt-6">
+            <!-- Username Input -->
+            <div class="flex items-center bg-white p-2 rounded-lg mb-4">
+                <span class="px-3 text-gray-500">🔴</span>
+                <input type="text" name="username" placeholder="Username" class="border border-gray-400 rounded-md w-full h-10 text-md bg-white text-black px-4">
+            </div>
+
+            <!-- Password Input -->
+            <div class="flex items-center bg-white p-2 rounded-lg mb-4">
+                <span class="px-3 text-gray-500">🔑</span>
+                <input type="password" name="password" placeholder="Password" class="border border-gray-400 rounded-md w-full h-10 text-md bg-white text-black px-4">
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="bg-blue-950 text-white py-2 px-4 w-full rounded-lg shadow-md hover:bg-blue-700 transition">
+                Login
+            </button>
+
+            <!-- Registration -->
+            <div class="mt-4 text-black">
+                <p>Don't have an account?</p>
+                <p><a class="link text-blue-700 hover:text-violet-900" href="{% url 'initial' %}">Click to Start Registration</a></p>
+            </div>
+        </div>
+      </form>
+  </div>
+
+</body>
+</html>
+
+<script>
+  // Hide the message after 3 seconds
+  setTimeout(function() {
+    var messageContainer = document.getElementById("message-container");
+    if (messageContainer) {
+      messageContainer.style.transition = "opacity 0.5s";
+      messageContainer.style.opacity = "0";
+      setTimeout(() => messageContainer.remove(), 500);
+    }
+  }, 2500);
+</script>

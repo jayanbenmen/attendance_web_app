@@ -1,0 +1,93 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Course</title>
+    {% tailwind_css %}
+</head>
+
+<body class="bg-gray-100">
+
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Course Registration</h2>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "error" %}
+                        <div class="alert alert-danger text-red-600 mb-4">
+                            {{ message }}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success text-green-600 mb-4">
+                            {{ message }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form name="register" novalidate hx-post="{% url 'addcourse' %}" class="text-black space-y-6">
+                {% csrf_token %}
+                
+                <div class="flex flex-col">
+                    <label for="incoursecode" class="text-gray-700 font-semibold">Course Code</label>
+                    <input type="text" name="incoursecode" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="incoursetitle" class="text-gray-700 font-semibold">Course Title</label>
+                    <input type="text" name="incoursetitle" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="insection" class="text-gray-700 font-semibold">Section</label>
+                    <input type="text" name="insection" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="instarttime" class="text-gray-700 font-semibold">Start Time</label>
+                    <input type="time" name="instarttime" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="inendtime" class="text-gray-700 font-semibold">End Time</label>
+                    <input type="time" name="inendtime" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="inday" class="text-gray-700 font-semibold">Select Day/s</label>
+                    <select id="day" name="inday" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="MW">MW</option>
+                        <option value="TTH">TTH</option>
+                        <option value="FSA">FSA</option>
+                        <option value="MON">MON</option>
+                        <option value="TUE">TUE</option>
+                        <option value="WED">WED</option>
+                        <option value="THU">THU</option>
+                        <option value="FRI">FRI</option>
+                        <option value="SAT">SAT</option>
+                        <option value="SUN">SUN</option>
+                    </select>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="inroom" class="text-gray-700 font-semibold">Room</label>
+                    <input type="text" name="inroom" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="inteacherid" class="text-gray-700 font-semibold">Teacher ID</label>
+                    <input type="text" name="inteacherid" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
+                </div>
+
+                <div class="flex justify-center mt-6">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">Add Course</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

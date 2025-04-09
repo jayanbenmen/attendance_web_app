@@ -1,0 +1,76 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <title>Profile</title>
+    {% tailwind_css %}
+</head>
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-3xl font-bold mb-2 md:mb-6">User Profile</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href="{% url 'studenthome' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+            <li><a href="{% url 'student_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+            <li><a href="{% url 'student_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>            
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+    <!-- Profile Section -->
+    <div class="flex-1 flex justify-center items-center p-4 md:p-6 bg-cover bg-center relative"
+         style="background-image: url('{% static 'images/pillars.jpg' %}');">
+        <div class="absolute inset-0 bg-black opacity-55"></div>
+
+        <div class="relative z-10 bg-gray-50 p-6 md:p-8 rounded-lg shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl text-center text-black">
+            <h1 class="font-bold text-2xl md:text-3xl mb-4">Your Profile</h1>
+
+            <div class="bg-gray-200 p-4 md:p-6 rounded-lg shadow-lg">
+                <div class="text-base md:text-lg space-y-4">
+                    <p><strong>User ID:</strong> {{ user.id }}</p>
+                    <p><strong>ID Number:</strong> {{ student.student_id }}</p>
+                    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                    <p>
+                        <strong>NFC UID:</strong> {{ student.nfc_uid }} 
+                        <a href="{% url 'student_nfcupd' %}" class="link text-blue-700 hover:text-violet-900">Update NFC UID</a>
+                    </p>
+                    <p>
+                        <strong>Password:</strong> ******** 
+                        <a href="{% url 'change-password' %}" class="link text-blue-700 hover:text-violet-900">Change Password</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+  // Toggle the sidebar visibility when the button is clicked
+  const toggleButton = document.getElementById('toggle-sidebar');
+  const sidebar = document.getElementById('sidebar');
+  
+  toggleButton.addEventListener('click', () => {
+      sidebar.classList.toggle('hidden');  // Toggle the 'hidden' class to show/hide sidebar
+  });
+</script>

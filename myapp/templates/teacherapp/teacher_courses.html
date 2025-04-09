@@ -1,0 +1,79 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses</title>
+    {% tailwind_css %}
+</head>
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">Courses</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href="{% url 'teacherhome' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+            <li><a href="{% url 'teacher_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+            <li><a href="{% url 'teacher_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>              
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+    <!-- Main Content -->
+    <div class="relative flex-1 p-4 md:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-55" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10">
+            <div class="flex justify-center">
+                <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-bold px-4 py-1 mb-4 md:mb-6">
+                    Your Courses
+                </h1>
+            </div>
+
+            {% if courses %}
+            <!-- Responsive Grid Layout for Courses -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {% for course in courses %}
+            {% with bg_color=forloop.counter0|add:"0" %}
+                <a href="{% url 'studentattendance' course.course_id %}" class="block">
+                    <div class="{% cycle 'bg-red-200' 'bg-violet-200' 'bg-yellow-200' 'bg-green-200' 'bg-blue-200' 'bg-purple-200' 'bg-pink-200' 'bg-indigo-200' 'bg-orange-200' %} bg-opacity-90 p-4 md:p-6 rounded-lg shadow-lg hover:shadow-xl transition">
+                        <h2 class="text-lg md:text-xl font-semibold text-gray-800">{{ course.course_code }} - {{ course.section }}</h2>
+                        <p class="text-gray-700">{{ course.course_title }}</p>
+                    </div>    
+                </a>
+                {% endwith %}
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-white text-center text-lg">No enrolled courses.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    // Toggle the sidebar visibility when the button is clicked
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+    
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');  // Toggle the 'hidden' class to show/hide sidebar
+    });
+</script>

@@ -1,0 +1,140 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <title>Courses</title>
+    {% tailwind_css %}
+</head>
+
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">Rooms</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, Admin {{ user.first_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href = "{% url 'admin:index' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition" target="_blank">Admin Hub</a></li>
+            <li><a href = "{% url 'admincourses' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Courses</a></li>
+            <li><a href = "{% url 'adminrooms' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Rooms</a></li>
+            <li><a href = "{% url 'nfcuid' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UID</a></li>
+
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>            
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+    
+    <!-- Main Content -->
+    <div class="relative flex-1 p-4 md:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-55" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+      <div class="relative z-10">
+          <div class="flex justify-center">
+              <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-bold px-4 py-1 mb-4 md:mb-6">
+                  Rooms
+              </h1>
+          </div>
+          
+          <div class="mt-4">
+              <button class="btn" onclick="add_room_modal.showModal()"
+              hx-get = "{% url 'addroom' %}"
+              hx-target = "#add_room_content"
+              hx-trigger = "click">
+              Add a Room
+              </button>
+  
+              <button class="btn" onclick="delete_room_modal.showModal()"
+              hx-get = "{% url 'deleteroom' %}"
+              hx-target = "#delete_room_content"
+              hx-trigger = "click">
+              Delete a Room
+              </button>
+          </div>
+
+          
+    {% if rooms %}
+    <!-- Responsive Grid Layout for Rooms -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-4">
+        {% for room in rooms %}
+            <a href="{% url 'roomattendance' room.room_id %}" class="block">
+              <div class="{% cycle 'bg-red-200' 'bg-violet-200' 'bg-yellow-200' 'bg-green-200' 'bg-blue-200' 'bg-purple-200' 'bg-pink-200' 'bg-indigo-200' 'bg-orange-200' %} bg-opacity-90 p-4 md:p-6 rounded-lg shadow-lg hover:shadow-xl transition">   
+                  <h2 class="text-lg md:text-xl font-semibold text-gray-800">{{ room.room_name }}</h2>
+              </div>
+            </a>
+        {% endfor %}
+    </div>
+        {% else %}
+    <p class="text-white text-center text-lg">No rooms available.</p>
+    {% endif %}
+      
+<!-- Open the modal using ID.showModal() method -->
+<dialog id="add_room_modal" class="modal">
+  <div id = "add_room_content" class="modal-box">
+
+  </div>
+  <form method="dialog" class="modal-backdrop">
+  
+  </form>
+</dialog>
+
+<!-- Open the modal using ID.showModal() method -->
+<dialog id="delete_room_modal" class="modal">
+  <div id = "delete_room_content" class="modal-box">
+
+  </div>
+  <form method="dialog" class="modal-backdrop">
+  
+  </form>
+</dialog>
+
+{% block page_js %}
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Select all modals
+    const modals = document.querySelectorAll(".modal");
+
+    modals.forEach((modal) => {
+      modal.addEventListener("click", function (event) {
+        // Check if clicked target is NOT inside the modal-box
+        if (!event.target.closest(".modal-box")) {
+          modal.close(); // Close only the clicked modal
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+    document.addEventListener("htmx:beforeSwap", function (e) {
+        if (e.detail.target.classList.contains("forms") && !e.detail.xhr.response){
+            location.reload();
+        }
+    });
+
+    // Toggle the sidebar visibility when the button is clicked
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+    
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');  // Toggle the 'hidden' class to show/hide sidebar
+    });
+</script>
+{% endblock %}
+
+</body>
+</html>

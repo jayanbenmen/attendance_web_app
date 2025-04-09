@@ -1,0 +1,94 @@
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ course.course_title }} {{ course.section }} Student Attendance</title>
+    {% tailwind_css %}
+</head>
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">Courses</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href="{% url 'studenthome' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+            <li><a href="{% url 'student_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+            <li><a href="{% url 'student_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>            
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+    <!-- Main Content -->
+    <div class="relative flex-1 p-4 sm:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-50"
+          style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10">
+
+            <!-- Course Info -->
+            <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">
+                <h1 class="font-bold text-2xl sm:text-3xl text-center mb-4">Your Attendance for {{ course.course_title }} {{ course.section }}</h1>
+                <p class="font-bold text-lg sm:text-xl text-center mb-2">{{ course.teacher.first_name }} {{ course.teacher.last_name }}</p>
+                <p class="font-bold text-lg sm:text-xl text-center mb-2">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
+                <p class="font-bold text-lg sm:text-xl text-center">{{ course.room.room_name }}</p>
+            </div>
+
+                <!-- Attendance Table -->
+                <div class="w-full flex justify-center">
+                    <div class="overflow-x-auto bg-white shadow-lg rounded-lg w-full max-w-5xl">
+                        <table class="w-full border-collapse text-sm sm:text-base">
+                            <thead>
+                                <tr class="border-b-2 border-gray-500 bg-blue-900 text-white">
+                                    <th class="py-3 px-4 text-left border-r-2 border-gray-300">Date</th>
+                                    <th class="py-3 px-4 text-left border-r-2 border-gray-300">Time-in</th>
+                                    <th class="py-3 px-4 text-left border-r-2 border-gray-300">Time-out</th>
+                                    <th class="py-3 px-4 text-left">Status</th> <!-- No border here, last column -->
+                                </tr>
+                            </thead>
+                            <tbody class="text-gray-900">
+                            {% for record in records %}
+                                <tr class="border-b even:bg-gray-100">
+                                    <td class="py-3 px-4 border-r-2 border-gray-300">{{ record.day_date }}</td>
+                                    <td class="py-3 px-4 border-r-2 border-gray-300">{{ record.time_in }}</td>
+                                    <td class="py-3 px-4 border-r-2 border-gray-300">{{ record.time_out }}</td>
+                                    <td class="py-3 px-4 font-semibold {% if record.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ record.status }}</td>
+                                </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="py-4 px-4 text-gray-500 italic text-center">No attendance records found.</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+<script>
+    const toggleBtn = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+    });
+</script>
