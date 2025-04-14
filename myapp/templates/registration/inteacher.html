@@ -1,60 +1,149 @@
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher Registration</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    {% tailwind_css %}
 </head>
-<body>
-  <div class="center">
-    {% if messages %}
-    {% for message in messages %}
-    {% if message.tags == "error" %}
-    <div class="alert alert-danger" role="alert">
-      {{ message }}
-    </div>
-    {% else %}
-    <div class="alert alert-success" role="alert">
-      {{ message }}
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
-    <h1>Teacher Registration Form</h1>
 
-    <form name="register" method="post" novalidate action="">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="id_username">{{ form.username.label }}:</label>
-            {{ form.username }}
+<body class="min-h-screen flex items-center justify-center p-6 bg-cover bg-center" style="background-image: url('{% static 'images/pillars.jpg' %}');">
+    <div class="absolute inset-0 bg-white opacity-40 z-0"></div> 
+    <div class="relative z-10 w-full max-w-4xl">
+
+    <!-- Flash Messages -->
+    {% if messages %}
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 space-y-3 z-50">
+        {% for message in messages %}
+            <div class="px-6 py-3 rounded-lg shadow-lg text-white text-center
+                {% if message.tags == 'error' %} bg-red-500 
+                {% else %} bg-green-500 {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Container: Flexbox for Side-by-Side Layout -->
+    <div class="flex flex-col md:flex-row bg-white shadow-2xl rounded-3xl overflow-hidden">
+
+        <!-- Logo Section -->
+        <div class="w-full md:w-1/2 flex flex-col justify-center items-center bg-blue-950 text-white p-6">
+            <h1 class="text-2xl md:text-3xl font-extrabold mb-4 text-center">Ateneo de Naga University</h1>
+            <h1 class="text-xl md:text-3xl font-extrabold mb-6 text-center">NFC Attendance</h1>
+            <img src="{% static 'images/adnu_logo.png' %}" alt="Logo" class="w-32 md:w-48">
         </div>
-        <div class="form-group">
-            <label for="id_first_name">{{ form.first_name.label }}:</label>
-            {{ form.first_name }}
+
+        <!-- Registration Form -->
+        <div class="w-full md:w-1/2 p-6 bg-gradient-to-r from-blue-50 to-blue-300">
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800 text-center">Teacher Registration Form</h1>
+            <form class="space-y-3" name="register" method="post" novalidate action="">
+                {% csrf_token %}
+
+                <!-- Input Fields -->
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="id_username">
+                        <span class="label-text text-gray-700">{{ form.username.label }}</span>
+                    </label>
+                    <input type="text" name="username" for="idusername"
+                    class="w-full p-2 border rounded-md text-gray-900"
+                    value="{{ form.username.value|default_if_none:'' }}"
+                    placeholder="Enter your ID Number e.g. HR202100001">
+                </div>
+              
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="id_first_name">
+                        <span class="label-text text-gray-700">{{ form.first_name.label }}</span>
+                    </label>
+                    <input type="text" name="first_name" for="id_first_name"
+                    class="w-full p-2 border rounded-md text-gray-900"
+                    value="{{ form.first_name.value|default_if_none:'' }}"
+                    placeholder="Enter your first name">
+                </div>
+
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="id_last_name">
+                        <span class="label-text text-gray-700">{{ form.last_name.label }}</span>
+                    </label>
+                    <input type="text" name="last_name" id="id_lastname"
+                    class="w-full p-2 border rounded-md text-gray-900"
+                    value="{{ form.last_name.value|default_if_none:'' }}"
+                    placeholder="Enter your last name">
+                </div>
+
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="id_email">
+                        <span class="label-text text-gray-700">{{ form.email.label }}</span>
+                    </label>
+                    <input type="email" name="email" id="email"
+                    class="w-full p-2 border rounded-md text-gray-900"
+                    value="{{ form.email.value|default_if_none:'' }}"
+                    placeholder="Enter your gbox email">
+                </div>
+
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="id_password1">
+                        <span class="label-text text-gray-700">{{ form.password1.label }}</span>
+                    </label>
+                    <div class="relative">
+                        <input type="password" name="password1" id="id_password1"
+                            class="w-full p-2 border rounded-md text-gray-900"
+                            value="{{ form.password1.value|default_if_none:'' }}"
+                            placeholder="Enter your password">
+                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-2 text-gray-500">
+                            <img src="{% static 'images/sharingan.png' %}" alt="Logo" class="w-6">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="id_password2">
+                        <span class="label-text text-gray-700">{{ form.password2.label }}</span>
+                    </label>
+                    <div class="relative">
+                    <input type="password" name="password2" id="id_password2"
+                        class="w-full p-2 border rounded-md text-gray-900"
+                        value="{{ form.password2.value|default_if_none:'' }}"
+                        placeholder="Confirm your password">
+                    <button type="button" onclick="togglePassword1()" class="absolute right-3 top-2 text-gray-500">
+                        <img src="{% static 'images/sharingan.png' %}" alt="Logo" class="w-6">
+                    </button>
+                </div>
+                </div>
+
+                <!-- NFC UID -->
+                <div class="form-control">
+                    <label class="block text-sm font-bold text-gray-700" for="nfc_uid">
+                        <span class="label-text text-gray-700">NFC UID</span>
+                    </label>
+                <input type="text" name="innfcuid" id="nfc_uid" placeholder="Enter your NFC UID e.g. a1bc2d34" class="w-full p-2 border rounded-md text-gray-900">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-blue-950 text-white px-6 py-2 rounded-md hover:bg-blue-700">Sign Up</button>
+                </div>
+            </form>  
+
+            <!-- Login Link -->
+            <p class="text-gray-600 text-sm mt-4 text-center">Already have an account? <a href="{% url 'login' %}" class="link text-blue-500 hover:text-violet-800">Login here</a></p>        
         </div>
-        <div class="form-group">
-            <label for="id_last_name">{{ form.last_name.label }}:</label>
-            {{ form.last_name }}
-        </div>
-        <div class="form-group">
-            <label for="id_email">{{ form.email.label }}:</label>
-            {{ form.email }}
-        </div>
-        <div class="form-group">
-            <label for="id_password1">{{ form.password1.label }}:</label>
-            {{ form.password1 }}
-        </div>
-        <div class="form-group">
-            <label for="id_password2">{{ form.password2.label }}:</label>
-            {{ form.password2 }}
-        </div>
-        <div class="form-group">
-            <label for="nfc_uid">NFC UID:</label>
-            <input type="text" name="innfcuid" id="nfc_uid" value="">
-        </div>
-        <button type="submit">Sign Up</button>
-    </form>
-  </div>
+    </div>
+    </div>
 </body>
 </html>
+
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.fixed div').forEach(el => {
+            el.classList.add('opacity-0', 'transition-opacity', 'duration-1000');
+            setTimeout(() => el.remove(), 1000); // Removes after animation
+        });
+    }, 2500); 
+
+    function togglePassword(id) {
+        var passwordField = document.getElementById(id);
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
+    }
+</script>
