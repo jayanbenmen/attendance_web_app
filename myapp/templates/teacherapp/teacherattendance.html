@@ -1,42 +1,92 @@
+{% load static tailwind_tags %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{course.course_title}} {{ course.section }} Teacher Attendance</title>
+    {% tailwind_css %}
 </head>
-<body>
-    <h1>Your Attendance for {{ course.course_title }} {{ course.section }}</h1>
-    <p>{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
-    <p>{{ course.room.room_name }}</p>
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-2xl font-bold mb-2 md:mb-6">Your Attendance</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href="{% url 'teacherhome' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+            <li><a href="{% url 'teacher_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+            <li><a href="{% url 'teacher_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>               
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+
+    <!-- Main Content -->
+    <div class="relative flex-1 p-6 overflow-auto before:absolute before:inset-0 before:bg-black before:opacity-40" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-6xl mx-auto">
+            <!-- Course Info -->
+            <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">                
+                <h1 class="text-2xl sm:text-2xl font-bold text-center text-gray-900 mb-2">Your Attendance for {{ course.course_title }} {{ course.section }}</h1></h1>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.room.room_name }}</p>
+            </div>
 
     {% if records %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time-in</th>
-                <th>Time-out</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="overflow-x-auto max-h-[600px] mb-8">
+        <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Date</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Time-in</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Time-out</th>
+                </tr>
+            </thead>
+            <tbody>
             {% for record in records %}
-            <tr>
-                <td>{{ record.day_date }}</td>
-                <td>{{ record.time_in }}</td>
-                <td>{{ record.time_out }}</td>
-            </tr>
-            {% endfor %}
+                <tr class="border-t text-gray-700">
+                    <td class="px-4 py-2 font-medium text-left align-middle">{{ record.day_date }}</td>
+                    <td class="px-4 py-2 font-medium text-left align-middle">{{ record.time_in }}</td>
+                    <td class="px-4 py-2 font-medium text-left align-middle">{{ record.time_out }}</td>
+                </tr>
+            {% endfor %} 
         </tbody>
     </table>
     <br>
     {% else %}
-        <div>No attendance record at the moment</div>
+    <div class="flex justify-center items-center min-h-[300px]">
+        <div class="bg-white text-gray-700  italic font-bold text-center px-8 py-8 rounded-xl shadow-lg text-lg w-full max-w-md">
+            No attendance record at the moment
+        </div>
+    </div>
     {% endif %}
-    <br>
-    <span><a href = "{% url 'teacherhome' %}">Home</a></span><br>
-    <span><a href = "{% url 'teacher_courses' %}">Courses</a></span><br>
-    <span><a href = "{% url 'teacher_profile' %}">User Profile</a></span><br>
-    <br>
-    <span><a href = "{% url 'logout' %}">Logout</a></span><br>
+    
+<script>
+    // Toggle the sidebar visibility when the button is clicked
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+    
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');  // Toggle the 'hidden' class to show/hide sidebar
+    });
+</script> 
+
 </body>
 </html>

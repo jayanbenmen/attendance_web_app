@@ -16,7 +16,7 @@
             <p class="text-lg font-semibold">Ateneo de Naga University</p>
         </div>
         <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
-        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">User Profile</h2>
+        <h2 class="text-center text-3xl font-bold mb-2 md:mb-6">User Profile</h2>
 
         {% if user.is_authenticated %}
             <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
@@ -62,7 +62,7 @@
         <h1 class="font-bold text-2xl md:text-2xl mb-4">{{ student.first_name }} {{ student.last_name }}</h1>
 
         <div class="flex items-center justify-center">
-        <form class="text-left mt-6 bg-gray-100 p-4 sm:p-6 rounded-lg shadow-md w-full max-w-xs sm:max-w-md" method="POST">
+        <form class="text-left mt-6 bg-gray-200 p-4 sm:p-6 rounded-lg shadow-md w-full max-w-xs sm:max-w-md" method="POST">
             {% csrf_token %}
             <p class="text-lg font-semibold text-center mb-4">Enter new NFC UID:</p>      
             <div class="flex flex-col">

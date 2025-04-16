@@ -262,6 +262,13 @@ class PasswordsChangeView(PasswordChangeView):
             return reverse_lazy('student_profile')  
         else:
             return reverse_lazy('teacher_profile')
+        
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['is_student'] = user.groups.filter(name='student').exists()
+        context['is_teacher'] = user.groups.filter(name='teacher').exists()
+        return context
           
 def password_success(request):
     return render(request, 'registration/password_success.html', {})
@@ -944,6 +951,8 @@ def is_valid_email(email):
         return True
     else:
         return False
+    
+
 
 def role_redirect(request):
     if request.method == "POST":
