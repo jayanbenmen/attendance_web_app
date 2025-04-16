@@ -1,65 +1,129 @@
+{% load static tailwind_tags %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ course.course_title }} {{ course.section }} Student Attendance</title>
+    {% tailwind_css %}
 </head>
-<body>
-    <h1>Students Attendance for {{ course.course_title }} {{ course.section }}</h1>
-    <p>{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
-    <p>{{ course.room.room_name }}</p>
 
-    <form method="post" id="date-form">
-        {% csrf_token %}  
-        {{ form }} 
-    </form>
-    {% if students %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Time-in</th>
-                <th>Time-out</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <td>{{ student.first_name }} {{ student.last_name }}</td>
-        
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+            <div class="bg-gray-800 text-center py-2 rounded mb-2">
+                <p class="text-lg font-semibold">Ateneo de Naga University</p>
+            </div>
+            <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+            <h2 class="text-center text-2xl font-bold mb-2 md:mb-6">Students Attendance</h2>
+    
+            {% if user.is_authenticated %}
+                <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+            {% else %}
+                <p class="text-center text-lg">Welcome, Guest!</p>
+            {% endif %}
+    
+            <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+                <li><a href="{% url 'teacherhome' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+                <li><a href="{% url 'teacher_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+                <li><a href="{% url 'teacher_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+                <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+            </ul>               
+        </div>
+    
+        <!-- Button to toggle sidebar visibility on small screens -->
+        <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+            ☰
+        </button>
+
+        <!-- Main Content -->
+        <div class="relative flex-1 p-6 overflow-auto before:absolute before:inset-0 before:bg-black before:opacity-40" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+            <div class="relative z-10 max-w-6xl mx-auto">
+                <!-- Course Info -->
+                <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">                
+                    <h1 class="text-2xl sm:text-2xl font-bold text-center text-gray-900 mb-2">Students Attendance for {{ course.course_title }} {{ course.section }}</h1></h1>
+                    <p class="text-center text-md font-medium text-gray-700">{{ course.teacher.first_name }} {{ course.teacher.last_name }}</p>
+                    <p class="text-center text-md font-medium text-gray-700">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
+                    <p class="text-center text-md font-medium text-gray-700">{{ course.room.room_name }}</p>
+                </div>
+
+        <!-- Date Form EDIT!-->
+        <form class="mb-6 text-black bg-white p-4 rounded-lg shadow-lg max-w-sm mx-auto" method="post" id="date-form">
+        {% csrf_token %}
+
+        <div class="space-y-4">
+        <!-- Date Field -->
+        <div>
+            <label for="{{ form.day_date.id_for_label }}" class="block text-sm font-medium text-gray-700">Select Date</label>
+                <div class="mt-1">
+                {{ form.day_date|add_class:"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+                </div>
+        </div>
+        </div>
+        </form>
+
+        <!-- Student Table -->
+        {% if students %}
+        <div class="overflow-x-auto max-h-[400px] mb-10">
+            <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-800 text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-sm font-semibold">Student Name</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold">Time-in</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold">Time-out</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for student in students %}
+                <tr class="border-t text-gray-700">
+                    <td class="px-4 py-2 font-medium">{{ student.first_name }} {{ student.last_name }}</td>
                 {% if student.attendance %}
-                    <td>{{ student.attendance.time_in }}</td>
-                    <td>{{ student.attendance.time_out }}</td>
-                    <td>{{ student.attendance.status }}</td>
+                    <td class="px-4 py-2 font-medium">{{ student.attendance.time_in }}</td>
+                    <td class="px-4 py-2 font-medium">{{ student.attendance.time_out }}</td>
+                    <td class="px-4 py-2 font-medium {% if student.attendance.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ student.attendance.status }}</td>
                 {% else %}
                     <td></td>
                     <td></td>
-                    <td>No Record</td>
+                    <td class="px-4 py-2 italic text-gray-500">No Record</td>
                 {% endif %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>  
     {% else %}
-        <div>No enrolled students at the moment.</div>
+        <div class="flex justify-center items-center min-h-[300px]">
+            <div class="bg-white text-gray-700  italic font-bold text-center px-8 py-8 rounded-xl shadow-lg text-lg w-full max-w-md">
+                No enrolled students at the moment.
+            </div>
     {% endif %}
-    <span><a href="{% url 'teacherattendance' course.course_id %}">View Your Attendance</a></span>
-    <span><a href="{% url 'teacher_classlist' course.course_id %}">Class List</a></span>
-    <span><a href="{% url 'students_monthly_attendance' course.course_id %}?day_date={{ form.cleaned_data.day_date|date:'Y-m-d' }}">Download</a></span>
-    <span><a href="{% url 'manual_attendance' course.course_id %}">Manual Record</a></span>
-    <br>
-    <br>
-    <span><a href = "{% url 'teacherhome' %}">Home</a></span><br>
-    <span><a href="{% url 'teacher_courses' %}">Courses</a></span><br>
-    <span><a href="{% url 'teacher_profile' %}">User Profile</a></span><br>
-    <br>
-    <span><a href="{% url 'logout' %}">Logout</a></span><br>
-</body>
-</html>
+
+
+    <div class="flex flex-wrap gap-4 justify-center mb-8">
+    <a href="{% url 'teacherattendance' course.course_id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded shadow">View Your Attendance</a></span>
+    <a href="{% url 'teacher_classlist' course.course_id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Class List</a></span>
+    <a href="{% url 'students_monthly_attendance' course.course_id %}?day_date={{ form.cleaned_data.day_date|date:'Y-m-d' }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">Download</a></span>
+    <a href="{% url 'manual_attendance' course.course_id %}" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded shadow">Manual Record</a></span>
+    </div>
+
 <script>
     // Add an event listener to the month select field to submit the form when changed
     document.addEventListener('change', function() {
         document.getElementById('date-form').submit();  // Automatically submit the form
     });
-</script>
+
+    // Sidebar toggle
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+    });
+</script>    
+
+</body>
+</html>
+

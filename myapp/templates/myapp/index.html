@@ -33,13 +33,18 @@
             <!-- Username Input -->
             <div class="flex items-center bg-white p-2 rounded-lg mb-4">
                 <span class="px-3 text-gray-500">🔴</span>
-                <input type="text" name="username" placeholder="Username" class="border border-gray-400 rounded-md w-full h-10 text-md bg-white text-black px-4">
+                <input type="text" name="username" placeholder="ID Number" class="border border-gray-400 rounded-md w-full h-10 text-md bg-white text-black px-4">
             </div>
 
             <!-- Password Input -->
-            <div class="flex items-center bg-white p-2 rounded-lg mb-4">
+            <div class="relative flex items-center bg-white p-2 rounded-lg mb-4">
                 <span class="px-3 text-gray-500">🔑</span>
-                <input type="password" name="password" placeholder="Password" class="border border-gray-400 rounded-md w-full h-10 text-md bg-white text-black px-4">
+                <input id="id_password" type="password" name="password" placeholder="Password" class="border border-gray-400 rounded-md w-full h-10 text-md bg-white text-black pr-10 pl-4">
+  
+                <button type="button" onclick="togglePassword('id_password')"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                  <img src="{% static 'images/sharingan.png' %}" alt="Toggle" class="w-6">
+                </button>
             </div>
 
             <!-- Login Button -->
@@ -50,7 +55,7 @@
             <!-- Registration -->
             <div class="mt-4 text-black">
                 <p>Don't have an account?</p>
-                <p><a class="link text-blue-700 hover:text-violet-900" href="{% url 'initial' %}">Click to Start Registration</a></p>
+                <p><a class="link text-blue-700 hover:text-violet-900" href="{% url 'instudent' %}">Click to Start Registration</a></p>
             </div>
         </div>
       </form>
@@ -69,4 +74,11 @@
       setTimeout(() => messageContainer.remove(), 500);
     }
   }, 2500);
+
+  function togglePassword(id) {
+    const input = document.getElementById(id);
+    if (input) {
+      input.type = input.type === "password" ? "text" : "password";
+    }
+  }
 </script>

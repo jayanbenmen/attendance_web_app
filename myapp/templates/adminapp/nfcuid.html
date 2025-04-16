@@ -43,7 +43,7 @@
     <div class="relative flex-1 p-4 md:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-55" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
         <div class="relative z-10">
             <div class="flex justify-center">
-                <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-semibold px-4 py-1 mb-4 md:mb-4">
+                <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-semibold px-4 py-2 mb-4 md:mb-4">
                     Teachers NFC UIDs
                 </h1>
             </div>
@@ -66,7 +66,7 @@
                         <td class="font-semibold px-4 py-2 text-left align-middle">{{ teacher.first_name }} {{ teacher.last_name }}</td>
                         <td class="font-bold px-4 py-2 text-left align-middle">{{ teacher.nfc_uid }}</td>
                         <td class="px-4 py-2 text-center align-middle">
-                            <button class="btn" onclick="upd_teacher_modal.showModal()"
+                            <button class="btn bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded shadow" onclick="upd_teacher_modal.showModal()"
                                 hx-get="{% url 'updteachernfc' teacher.teacher_id %}"
                                 hx-target="#upd_teacher_content"
                                 hx-trigger="click">
@@ -83,7 +83,7 @@
         {% endif %}
 
         <div class="flex justify-center">
-            <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-semibold px-4 py-1 mb-2 md:mb-4">
+            <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-semibold px-4 py-2 mb-2 md:mb-4">
                 Students NFC UIDs
             </h1>
         </div>
@@ -106,7 +106,7 @@
                         <td class="font-semibold px-4 py-2 text-left align-middle">{{ student.first_name }} {{ student.last_name }}</td>
                         <td class="font-bold px-4 py-2 text-left align-middle">{{ student.nfc_uid }}</td>
                         <td class="px-4 py-2 text-center align-middle">
-                            <button class="btn" onclick="upd_student_modal.showModal()"
+                            <button class="btn bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded shadow" onclick="upd_student_modal.showModal()"
                                 hx-get="{% url 'updstudentnfc' student.student_id %}"
                                 hx-target="#upd_student_content"
                                 hx-trigger="click">

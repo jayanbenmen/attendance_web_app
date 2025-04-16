@@ -88,13 +88,11 @@
                 </div>
             </form>  
 
-            <p class="text-gray-600 text-sm mt-4 text-center">Already have an account? <a href="{% url 'login' %}" class="link text-blue-500 hover:text-violet-800">Login here</a></p>        
+            <p class="text-gray-600 text-sm mt-4 text-center">Already have an account? <a href="{% url 'login' %}" class="link text-blue-700 hover:text-violet-900">Login here</a></p>        
         </div>
     </div>
-    </div>          
-</body>
-</html>
-
+    </div>    
+    
 <script>
     setTimeout(() => {
         document.querySelectorAll('.fixed div').forEach(el => {
@@ -107,4 +105,9 @@
         var passwordField = document.getElementById(id);
         passwordField.type = passwordField.type === "password" ? "text" : "password";
     }
-</script>
+</script>    
+    
+</body>
+</html>
+
+

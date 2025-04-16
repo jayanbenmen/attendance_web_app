@@ -1,72 +1,140 @@
+{% load static tailwind_tags %}
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ course.course_title }} {{ course.section }} Student Attendance</title>
+    {% tailwind_css %}
 </head>
-<body>
-    <h1>Record Manually for for {{ course.course_title }} {{ course.section }}</h1>
-    <p>{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
-    <p>{{ course.room.room_name }}</p>
-    <p>Today's date is: {{ current_date }}</p>
-    {% if messages %}
-    {% for message in messages %}
-    {% if message.tags == "error" %}
-    <div class="alert alert-danger" role="alert">
-      {{ message }}
-    </div>
-    {% else %}
-    <div class="alert alert-success" role="alert">
-      {{ message }}
-    </div>
-    {% endif %}
-    {% endfor %}
-    {% endif %}
 
-    {% if students %}
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for student in students %}
-            <tr>
-                <td>{{ student.first_name }} {{ student.last_name }}</td>
-                <form method = "post">
-                {% csrf_token %}
-                    <td>
-                        <select id = "status" name = "instatus">
-                            <option value = "On Time">On Time</option>
-                            <option value = "Late">Late</option>
-                            <option value = "Absent">Absent</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type = "submit" value = "Submit" width = "300" height = "100">
-                    </td>
-                    <input type="hidden" name="instudentid" value="{{ student.student_id }}">
-                </form>
-            </tr>
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-2xl font-bold mb-2 md:mb-6">Students Attendance</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href="{% url 'teacherhome' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">🏠 Home</a></li>
+            <li><a href="{% url 'teacher_courses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">📚 Courses</a></li>
+            <li><a href="{% url 'teacher_profile' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">👤 User Profile</a></li>
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">🚪 Logout</a></li>
+        </ul>               
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+    <!-- Main Content -->
+    <div class="relative flex-1 p-6 overflow-auto before:absolute before:inset-0 before:bg-black before:opacity-40" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+        <div class="relative z-10 max-w-6xl mx-auto">
+            <!-- Course Info -->
+            <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">                
+                <h1 class="text-2xl sm:text-2xl font-bold text-center text-gray-900 mb-2">Record Manually for {{ course.course_title }} {{ course.section }}</h1>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.room.room_name }}</p>
+            </div>
+            
+            <div class="flex justify-center items-center min-h-[30px]">
+                <div class="bg-white text-gray-700 font-bold text-center px-2 py-2 mb-4 rounded-xl shadow-lg text-lg w-full max-w-md">
+                    <p>Today's date is: {{ current_date }}</p>            
+                </div>
+            </div>
+
+        <!-- Flash Messages -->
+        {% if messages %}
+        <div class="fixed top-4 left-1/2 transform -translate-x-1/2 space-y-3 z-50">
+            {% for message in messages %}
+                <div class="px-6 py-3 rounded-lg shadow-lg text-white text-center
+                    {% if message.tags == 'error' %} bg-red-500 
+                    {% else %} bg-green-500 {% endif %}">
+                    {{ message }}
+                </div>
             {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-        <div>No enrolled students at the moment.</div>
-    {% endif %}
-    <br>
-    <span><a href = "{% url 'teacherhome' %}">Home</a></span><br>
-    <span><a href="{% url 'teacher_courses' %}">Courses</a></span><br>
-    <span><a href="{% url 'teacher_profile' %}">User Profile</a></span><br>
-    <br>
-    <span><a href="{% url 'logout' %}">Logout</a></span><br>
-</body>
-</html>
+        </div>
+        {% endif %}
+
+        {% if students %}
+        <div class="overflow-x-auto max-h-[600px] mb-8">
+            <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
+                <thead class="bg-gray-800 text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
+                        <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr class="border-t text-gray-700">
+                            <form method="post" class="flex items-center justify-between w-full">
+                                {% csrf_token %}
+                                <td class="px-4 py-2 font-medium text-left align-middle">
+                                    {{ student.first_name }} {{ student.last_name }}
+                                </td>
+                    
+                                <td class="px-2 py-2">
+                                    <select name="instatus" class="w-full sm:w-[250px] md:w-1/2 font-bold border rounded px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        <option value="On Time" class="font-bold text-green-600">On Time</option>
+                                        <option value="Late" class="font-bold text-red-600">Late</option>
+                                        <option value="Absent" class="font-bold text-red-600">Absent</option>
+                                    </select>
+                                </td>
+                    
+                                <td class="px-4 py-2">
+                                    <input type="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded shadow transition duration-150 ease-in-out">
+                                </td>
+                    
+                                <input type="hidden" name="instudentid" value="{{ student.student_id }}">
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </tbody>            
+            </table>
+        </div>
+        {% else %}
+        <div class="flex justify-center items-center min-h-[300px]">
+            <div class="bg-white text-gray-700 italic font-bold text-center px-8 py-8 rounded-xl shadow-lg text-lg w-full max-w-md">
+                No enrolled students at the moment.
+            </div>
+        {% endif %}
+
+    </div>
+
 <script>
     // Add an event listener to the month select field to submit the form when changed
     document.addEventListener('change', function() {
         document.getElementById('date-form').submit();  // Automatically submit the form
     });
+
+    // Toggle the sidebar visibility when the button is clicked
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+    
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');  // Toggle the 'hidden' class to show/hide sidebar
+    });
+
+    setTimeout(() => {
+        document.querySelectorAll('.fixed div').forEach(el => {
+            el.classList.add('opacity-0', 'transition-opacity', 'duration-1000');
+            setTimeout(() => el.remove(), 1000);
+        });
+    }, 2500); 
 </script>
+
+</body>
+</html>

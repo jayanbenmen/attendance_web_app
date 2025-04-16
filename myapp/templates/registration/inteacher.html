@@ -91,7 +91,7 @@
                             class="w-full p-2 border rounded-md text-gray-900"
                             value="{{ form.password1.value|default_if_none:'' }}"
                             placeholder="Enter your password">
-                        <button type="button" onclick="togglePassword()" class="absolute right-3 top-2 text-gray-500">
+                        <button type="button" onclick="togglePassword('id_password1')" class="absolute right-3 top-2 text-gray-500">
                             <img src="{% static 'images/sharingan.png' %}" alt="Logo" class="w-6">
                         </button>
                     </div>
@@ -106,7 +106,7 @@
                         class="w-full p-2 border rounded-md text-gray-900"
                         value="{{ form.password2.value|default_if_none:'' }}"
                         placeholder="Confirm your password">
-                    <button type="button" onclick="togglePassword1()" class="absolute right-3 top-2 text-gray-500">
+                    <button type="button" onclick="togglePassword('id_password2')" class="absolute right-3 top-2 text-gray-500">
                         <img src="{% static 'images/sharingan.png' %}" alt="Logo" class="w-6">
                     </button>
                 </div>
@@ -127,12 +127,10 @@
             </form>  
 
             <!-- Login Link -->
-            <p class="text-gray-600 text-sm mt-4 text-center">Already have an account? <a href="{% url 'login' %}" class="link text-blue-500 hover:text-violet-800">Login here</a></p>        
+            <p class="text-gray-600 text-sm mt-4 text-center">Already have an account? <a href="{% url 'login' %}" class="link text-blue-700 hover:text-violet-900">Login here</a></p>        
         </div>
     </div>
     </div>
-</body>
-</html>
 
 <script>
     setTimeout(() => {
@@ -147,3 +145,7 @@
         passwordField.type = passwordField.type === "password" ? "text" : "password";
     }
 </script>
+
+</body>
+</html>
+
