@@ -16,7 +16,7 @@
             <p class="text-lg font-semibold">Ateneo de Naga University</p>
         </div>
         <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
-        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">Courses</h2>
+        <h2 class="text-center text-2xl font-bold mb-2 md:mb-6">{{ course.course_code }} - {{ course.section }}</h2>
 
         {% if user.is_authenticated %}
             <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
@@ -40,39 +40,38 @@
     <!-- Main Content -->
     <div class="relative flex-1 p-4 sm:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-50"
           style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
-        <div class="relative z-10">
+        <div class="relative z-10 max-w-7xl mx-auto">
 
             <!-- Course Info -->
-            <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">
-                <h1 class="font-bold text-2xl sm:text-3xl text-center mb-4">Your Attendance for {{ course.course_title }} {{ course.section }}</h1>
-                <p class="font-bold text-lg sm:text-xl text-center mb-2">{{ course.teacher.first_name }} {{ course.teacher.last_name }}</p>
-                <p class="font-bold text-lg sm:text-xl text-center mb-2">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
-                <p class="font-bold text-lg sm:text-xl text-center">{{ course.room.room_name }}</p>
+            <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">                       
+                <h1 class="text-2xl sm:text-2xl font-bold text-center text-gray-900 mb-2">Your Attendance for {{ course.course_title }} {{ course.section }}</h1>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.teacher.first_name }} {{ course.teacher.last_name }}</p>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
+                <p class="text-center text-md font-medium text-gray-700">{{ course.room.room_name }}</p>
             </div>
 
                 <!-- Attendance Table -->
-                <div class="w-full flex justify-center">
-                    <div class="overflow-x-auto bg-white shadow-lg rounded-lg w-full max-w-5xl">
-                        <table class="w-full border-collapse text-sm sm:text-base">
-                            <thead>
-                                <tr class="border-b-2 border-gray-500 bg-blue-900 text-white">
-                                    <th class="py-3 px-4 text-left border-r-2 border-gray-300">Date</th>
-                                    <th class="py-3 px-4 text-left border-r-2 border-gray-300">Time-in</th>
-                                    <th class="py-3 px-4 text-left border-r-2 border-gray-300">Time-out</th>
-                                    <th class="py-3 px-4 text-left">Status</th> <!-- No border here, last column -->
+                <div class="overflow-x-auto max-h-[400px] mb-10">
+                        <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
+                            <thead class="bg-gray-800 text-white uppercase">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-md font-semibold">Date</th>
+                                    <th class="px-4 py-3 text-left text-md font-semibold">Time-in</th>
+                                    <th class="px-4 py-3 text-left text-md font-semibold">Time-out</th>
+                                    <th class="px-4 py-3 text-left text-md font-semibold">Status</th> <!-- No border here, last column -->
                                 </tr>
                             </thead>
                             <tbody class="text-gray-900">
                             {% for record in records %}
-                                <tr class="border-b even:bg-gray-100">
-                                    <td class="py-3 px-4 border-r-2 border-gray-300">{{ record.day_date }}</td>
-                                    <td class="py-3 px-4 border-r-2 border-gray-300">{{ record.time_in }}</td>
-                                    <td class="py-3 px-4 border-r-2 border-gray-300">{{ record.time_out }}</td>
-                                    <td class="py-3 px-4 font-semibold {% if record.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ record.status }}</td>
+                                <tr class="border-t text-gray-700">
+                                    <td class="px-4 py-2 font-bold">{{ record.day_date }}</td>
+                                    <td class="px-4 py-2 font-bold">{{ record.time_in }}</td>
+                                    <td class="px-4 py-2 font-bold">{{ record.time_out }}</td>
+                                    <td class="px-4 py-2 font-bold {% if record.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ record.status }}</td>
                                 </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="4" class="py-4 px-4 text-gray-500 italic text-center">No attendance records found.</td>
+                                <td colspan="4" class="py-4 px-4 text-gray-600 font-semibold italic text-center">No attendance records found.</td>
                             </tr>
                             {% endfor %}
                             </tbody>
@@ -81,8 +80,6 @@
                 </div>
         </div>
     </div>
-</body>
-</html>
 
 
 <script>
@@ -92,3 +89,7 @@
         sidebar.classList.toggle('hidden');
     });
 </script>
+
+</body>
+</html>
+

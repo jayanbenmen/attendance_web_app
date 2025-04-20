@@ -316,13 +316,18 @@ def student_nfcupd(request):
             errors.append('Only hexadecimal characters (0-9, A-F) are allowed')
 
         outstudentnfc = outstudentnfc.upper()
+        formatted_nfc = ":".join(outstudentnfc[i:i+2] for i in range(0, 8, 2))  # Format as XX:XX:XX:XX
+
+        if Students.objects.filter(nfc_uid=formatted_nfc).exclude(student_id=student.student_id).exists() \
+            or Teachers.objects.filter(nfc_uid=formatted_nfc).exists():
+            errors.append('NFC UID already exists for another user')
 
         if errors:
             for error in errors:
                 messages.error(request, error)
             return redirect('student_nfcupd')
                 
-        student.nfc_uid = ":".join(outstudentnfc[i:i+2] for i in range(0, 8, 2))  # Format as XX:XX:XX:XX
+        student.nfc_uid = formatted_nfc
         student.save()
         return redirect('student_profile')
     return render(request, "studentapp/student_nfcupd.html",{'student': student})
@@ -390,13 +395,18 @@ def teacher_nfcupd(request):
             errors.append('Only hexadecimal characters (0-9, A-F) are allowed')
 
         outteachernfc = outteachernfc.upper()
+        formatted_nfc = ":".join(outteachernfc[i:i+2] for i in range(0, 8, 2))  # Format as XX:XX:XX:XX
+
+        if Teachers.objects.filter(nfc_uid=formatted_nfc).exclude(teacher_id=teacher.teacher_id).exists() \
+            or Students.objects.filter(nfc_uid=formatted_nfc).exists():
+            errors.append('NFC UID already exists for another user')
 
         if errors:
             for error in errors:
                 messages.error(request, error)
             return redirect('teacher_nfcupd')
                 
-        teacher.nfc_uid = ":".join(outteachernfc[i:i+2] for i in range(0, 8, 2))  # Format as XX:XX:XX:XX
+        teacher.nfc_uid = formatted_nfc
         teacher.save()
         return redirect('teacher_profile')
     return render(request, "teacherapp/teacher_nfcupd.html",{'teacher': teacher})

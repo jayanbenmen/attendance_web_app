@@ -10,7 +10,7 @@ def unauthenticated_user(view_func):
             elif request.user.groups.filter(name='teacher').exists():
                 return redirect('teacherhome')
             elif request.user.groups.filter(name='admin').exists():
-                return redirect('adminhome')
+                return redirect('admincourses')
             else:
                 return HttpResponse("Unauthorized access. Please contact support.")
         else:

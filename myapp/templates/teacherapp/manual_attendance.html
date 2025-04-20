@@ -68,12 +68,12 @@
         {% endif %}
 
         {% if students %}
-        <div class="overflow-x-auto max-h-[600px] mb-8">
+        <div class="overflow-x-auto max-h-[700px] mb-8">
             <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
                 <thead class="bg-gray-800 text-white">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+                        <th class="px-4 py-3 text-left text-md font-semibold">Name</th>
+                        <th class="px-4 py-3 text-left text-md font-semibold">Status</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -94,8 +94,10 @@
                                     </select>
                                 </td>
                     
-                                <td class="px-4 py-2">
-                                    <input type="submit" value="Submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded shadow transition duration-150 ease-in-out">
+                                <td class="px-4 py-2 text-left align-middle">
+                                    <div class="flex items-center justify-center h-full">
+                                        <input type="submit" value="Submit" class="btn bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded shadow transition duration-150 ease-in-out">
+                                    </div>
                                 </td>
                     
                                 <input type="hidden" name="instudentid" value="{{ student.student_id }}">

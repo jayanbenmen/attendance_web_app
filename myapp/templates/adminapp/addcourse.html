@@ -2,92 +2,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add a Course</title>
-    {% tailwind_css %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add a Course</title>
+  {% tailwind_css %}
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center py-6">
 
-    <div class="min-h-screen flex items-center justify-center">
-        <div class="w-full max-w-2xl bg-white p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Course Registration</h2>
+  {% if messages %}
+      <div id="message-container" class="fixed top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-lg px-6 py-3 rounded-md shadow-lg z-50 text-center">
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
 
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags == "error" %}
-                        <div class="alert alert-danger text-red-600 mb-4">
-                            {{ message }}
-                        </div>
-                    {% else %}
-                        <div class="alert alert-success text-green-600 mb-4">
-                            {{ message }}
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
+  <div class="w-full max-w-md mx-auto bg-gray-200 rounded-lg shadow-md p-4 sm:p-6">
 
-            <form name="register" novalidate hx-post="{% url 'addcourse' %}" class="text-black space-y-6">
-                {% csrf_token %}
-                
-                <div class="flex flex-col">
-                    <label for="incoursecode" class="text-gray-700 font-semibold">Course Code</label>
-                    <input type="text" name="incoursecode" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+    <div class="flex justify-center text-black">
+      <div id="form-container" class="w-full">
+        <form name="register" novalidate hx-post="{% url 'addcourse' %}" class="space-y-6 text-black">
+        <a href="{% url 'admincourses' %}" class="absolute top-2 right-2 text-white text-xl font-bold">X</a>
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Course Registration</h2>        
+        {% csrf_token %}
+        <div class="mb-4">
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Course Code</label>
+            <input type="text" name="incoursecode" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
 
-                <div class="flex flex-col">
-                    <label for="incoursetitle" class="text-gray-700 font-semibold">Course Title</label>
-                    <input type="text" name="incoursetitle" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Course Title</label>
+            <input type="text" name="incoursetitle" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
 
-                <div class="flex flex-col">
-                    <label for="insection" class="text-gray-700 font-semibold">Section</label>
-                    <input type="text" name="insection" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Section</label>
+            <input type="text" name="insection" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
 
-                <div class="flex flex-col">
-                    <label for="instarttime" class="text-gray-700 font-semibold">Start Time</label>
-                    <input type="time" name="instarttime" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-gray-700 font-semibold mb-1">Start Time</label>
+              <input type="time" name="instarttime" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+            </div>
 
-                <div class="flex flex-col">
-                    <label for="inendtime" class="text-gray-700 font-semibold">End Time</label>
-                    <input type="time" name="inendtime" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+            <div>
+              <label class="block text-gray-700 font-semibold mb-1">End Time</label>
+              <input type="time" name="inendtime" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+            </div>
+          </div>
 
-                <div class="flex flex-col">
-                    <label for="inday" class="text-gray-700 font-semibold">Select Day/s</label>
-                    <select id="day" name="inday" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="MW">MW</option>
-                        <option value="TTH">TTH</option>
-                        <option value="FSA">FSA</option>
-                        <option value="MON">MON</option>
-                        <option value="TUE">TUE</option>
-                        <option value="WED">WED</option>
-                        <option value="THU">THU</option>
-                        <option value="FRI">FRI</option>
-                        <option value="SAT">SAT</option>
-                        <option value="SUN">SUN</option>
-                    </select>
-                </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Select Day/s</label>
+            <select name="inday" required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              <option value="MW">MW</option>
+              <option value="TTH">TTH</option>
+              <option value="FSA">FSA</option>
+              <option value="MON">MON</option>
+              <option value="TUE">TUE</option>
+              <option value="WED">WED</option>
+              <option value="THU">THU</option>
+              <option value="FRI">FRI</option>
+              <option value="SAT">SAT</option>
+              <option value="SUN">SUN</option>
+            </select>
+          </div>
 
-                <div class="flex flex-col">
-                    <label for="inroom" class="text-gray-700 font-semibold">Room</label>
-                    <input type="text" name="inroom" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Room</label>
+            <input type="text" name="inroom" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
 
-                <div class="flex flex-col">
-                    <label for="inteacherid" class="text-gray-700 font-semibold">Teacher ID</label>
-                    <input type="text" name="inteacherid" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" value="" required>
-                </div>
+          <div>
+            <label class="block text-gray-700 font-semibold mb-1">Teacher ID</label>
+            <input type="text" name="inteacherid" required
+                  class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          </div>
 
-                <div class="flex justify-center mt-6">
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">Add Course</button>
-                </div>
-            </form>
-        </div>
+          <div class="flex justify-center pt-4">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">Add Course</button>
+          </div>
+          
+      </form>
+     </div>
     </div>
+  </div>
+
+<script>
+  // Hide the message after 3 seconds
+  setTimeout(function() {
+    var messageContainer = document.getElementById("message-container");
+    if (messageContainer) {
+      messageContainer.style.transition = "opacity 0.5s";
+      messageContainer.style.opacity = "0";
+      setTimeout(() => messageContainer.remove(), 500);
+    }
+  }, 2500);  
+
+</script>
 
 </body>
 </html>

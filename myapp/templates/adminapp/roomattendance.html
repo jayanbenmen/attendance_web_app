@@ -29,7 +29,7 @@
             <li><a href = "{% url 'admin:index' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition" target="_blank">Admin Hub</a></li>
             <li><a href = "{% url 'admincourses' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Courses</a></li>
             <li><a href = "{% url 'adminrooms' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Rooms</a></li>
-            <li><a href = "{% url 'nfcuid' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UID</a></li>
+            <li><a href = "{% url 'nfcuid' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UIDs</a></li>
 
             <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">Logout</a></li>
         </ul>            
@@ -42,33 +42,29 @@
 
     <!-- Main Content -->
     <div class="relative flex-1 p-4 md:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-55" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
-        <div class="relative z-10">
+        <div class="relative z-10 max-w-7xl mx-auto">
             <div class="flex justify-center">
                 <h1 class="inline-block bg-gray-800 text-white rounded-lg text-2xl md:text-3xl font-bold px-4 py-2 mb-4 md:mb-6">
                     Room Log for {{room.room_name}}
                 </h1>
             </div>
 
-        <!-- Date Form EDIT!-->
-        <form class="mb-6 text-black bg-white p-4 rounded-lg shadow-lg max-w-sm mx-auto" method="post" id="date-form">
+        <form class="mb-4 text-black bg-gray-100 p-[8px] rounded-lg shadow-lg max-w-xs mx-auto" method="post" id="date-form">
             {% csrf_token %}
-
-            <div class="space-y-4">
-            <!-- Date Field -->
-            <div>
-                <label for="{{ form.day_date.id_for_label }}" class="block text-sm font-medium text-gray-700">Select Date</label>
-                    <div class="mt-1">
-                    {{ form.day_date|add_class:"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+                <div class="space-y-4">
+                <!-- Date Field -->
+                <div class="flex justify-center items-center space-x-4 bg-transparent">
+                        <label for="{{ form.day_date.id_for_label }}" class="block text-center text-md font-medium text-gray-700">Select Date</label>
+                        {{ form.day_date|add_class:"w-full sm:w-64 px-3 py-2 bg-white bg-opacity-80 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
                     </div>
-            </div>
-            </div>
-            </form>
+                </div>
+        </form>
 
         <!-- Log Room Table -->
         {% if log_records %}
-        <div class="overflow-x-auto max-h-[600px] mb-8">
+        <div class="overflow-x-auto max-h-[500px] mb-8">
             <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
-                <thead class="bg-gray-800 text-white">
+                <thead class="bg-gray-800 text-white uppercase">
                     <tr>
                         <th class="px-4 py-3 text-left text-sm font-semibold">Date</th>
                         <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
@@ -95,8 +91,8 @@
             </table>
         {% else %}
             <div class="flex justify-center items-center min-h-[300px]">
-                <div class="bg-white text-gray-700  italic font-bold text-center px-8 py-8 rounded-xl shadow-lg text-lg w-full max-w-md">
-                    No room log records at the moment
+                <div class="bg-white bg-opacity-90 text-center text-gray-800 font-semibold  italic sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">
+                    No room log records at the moment.
                 </div>
             </div>
         {% endif %}
