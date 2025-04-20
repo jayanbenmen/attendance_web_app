@@ -17,7 +17,7 @@
             <p class="text-lg font-semibold">Ateneo de Naga University</p>
         </div>
         <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
-        <h2 class="text-center text-2xl font-bold mb-2 md:mb-6">Your Attendance</h2>
+        <h2 class="text-center text-3xl font-bold mb-2 md:mb-6">Class List</h2>
 
         {% if user.is_authenticated %}
             <p class="text-center font-bold text-xl md:text-[20px]">Welcome, {{ user.first_name }} {{ user.last_name }}!</p>
@@ -50,13 +50,13 @@
 
 
     {% if students %}
-    <div class="overflow-x-auto max-h-[600px] mb-8">
+    <div class="overflow-x-auto max-h-[700px] mb-8">
         <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
-            <thead class="bg-gray-800 text-white">
+            <thead class="bg-gray-800 text-white uppercase">
                 <tr>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Student ID</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Gbox</th>
+                    <th class="px-4 py-3 text-left text-md font-semibold">Student ID</th>
+                    <th class="px-4 py-3 text-left text-md font-semibold">Name</th>
+                    <th class="px-4 py-3 text-left text-md font-semibold">Gbox</th>
                 </tr>
             </thead>
             <tbody>

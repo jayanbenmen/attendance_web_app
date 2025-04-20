@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%_bx8xe28t*z%r#*=ja7m0wu9r3uzos&q^)05mb!n-vuxx@7y+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['54.169.134.213', 'localhost', '127.0.0.1']
 
+ALLOWED_HOSTS = ['54.169.134.213', 'localhost', '127.0.0.1', 'nfc-sp.info']
 
 # Application definition
 
@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     # other Django apps
     'tailwind',
     'theme',
-    'django_browser_reload',
     'widget_tweaks',
     #own
     'myapp',
@@ -62,8 +61,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
-
 ]
 
 ROOT_URLCONF = 'mydjangosite.urls'
@@ -97,20 +94,19 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-"""
-"""
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'attendance_test',
         'USER': 'root',
-        'PASSWORD': '021302021302',
+        'PASSWORD': 'root123',
         'HOST': '127.0.0.1',
         'PORT': '3306'
     }
 }
 """
-
 
 DATABASES = {
     'default': {
@@ -157,7 +153,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'
 
 USE_I18N = True
 
@@ -173,6 +169,7 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",  # Add your local static folder path
 ]
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

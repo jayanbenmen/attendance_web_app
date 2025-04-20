@@ -39,8 +39,9 @@
         </button>
 
         <!-- Main Content -->
-        <div class="relative flex-1 p-6 overflow-auto before:absolute before:inset-0 before:bg-black before:opacity-40" style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
-            <div class="relative z-10 max-w-6xl mx-auto">
+        <div class="relative flex-1 p-4 sm:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-50"
+            style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+            <div class="relative z-10 max-w-7xl mx-auto">
                 <!-- Course Info -->
                 <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">                
                     <h1 class="text-2xl sm:text-2xl font-bold text-center text-gray-900 mb-2">Students Attendance for {{ course.course_title }} {{ course.section }}</h1></h1>
@@ -49,31 +50,27 @@
                     <p class="text-center text-md font-medium text-gray-700">{{ course.room.room_name }}</p>
                 </div>
 
-        <!-- Date Form EDIT!-->
-        <form class="mb-6 text-black bg-white p-4 rounded-lg shadow-lg max-w-sm mx-auto" method="post" id="date-form">
-        {% csrf_token %}
-
-        <div class="space-y-4">
-        <!-- Date Field -->
-        <div>
-            <label for="{{ form.day_date.id_for_label }}" class="block text-sm font-medium text-gray-700">Select Date</label>
-                <div class="mt-1">
-                {{ form.day_date|add_class:"w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+            <form class="mb-4 text-black bg-gray-100 p-[8px] rounded-lg shadow-lg max-w-xs mx-auto" method="post" id="date-form">
+            {% csrf_token %}
+                <div class="space-y-4">
+                <!-- Date Field -->
+                <div class="flex justify-center items-center space-x-4 bg-transparent">
+                        <label for="{{ form.day_date.id_for_label }}" class="block text-center text-md font-medium text-gray-700">Select Date</label>
+                        {{ form.day_date|add_class:"w-full sm:w-64 px-3 py-2 bg-white bg-opacity-80 text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" }}
+                    </div>
                 </div>
-        </div>
-        </div>
-        </form>
+            </form>
 
         <!-- Student Table -->
         {% if students %}
-        <div class="overflow-x-auto max-h-[400px] mb-10">
+        <div class="overflow-x-auto max-h-[600px] mb-10">
             <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">
-                <thead class="bg-gray-800 text-white">
+                <thead class="bg-gray-800 text-white uppercase">
                     <tr>
-                        <th class="px-4 py-3 text-left text-sm font-semibold">Student Name</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold">Time-in</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold">Time-out</th>
-                        <th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+                        <th class="px-4 py-3 text-left text-md font-semibold">Student Name</th>
+                        <th class="px-4 py-3 text-left text-md font-semibold">Time-in</th>
+                        <th class="px-4 py-3 text-left text-md font-semibold">Time-out</th>
+                        <th class="px-4 py-3 text-left text-md font-semibold">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -83,7 +80,7 @@
                 {% if student.attendance %}
                     <td class="px-4 py-2 font-medium">{{ student.attendance.time_in }}</td>
                     <td class="px-4 py-2 font-medium">{{ student.attendance.time_out }}</td>
-                    <td class="px-4 py-2 font-medium {% if student.attendance.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ student.attendance.status }}</td>
+                    <td class="px-4 py-2 font-bold {% if student.attendance.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ student.attendance.status }}</td>
                 {% else %}
                     <td></td>
                     <td></td>
@@ -99,14 +96,15 @@
             <div class="bg-white text-gray-700  italic font-bold text-center px-8 py-8 rounded-xl shadow-lg text-lg w-full max-w-md">
                 No enrolled students at the moment.
             </div>
+        </div>
     {% endif %}
 
 
     <div class="flex flex-wrap gap-4 justify-center mb-8">
-    <a href="{% url 'teacherattendance' course.course_id %}" class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-2 rounded shadow">View Your Attendance</a></span>
-    <a href="{% url 'teacher_classlist' course.course_id %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow">Class List</a></span>
-    <a href="{% url 'students_monthly_attendance' course.course_id %}?day_date={{ form.cleaned_data.day_date|date:'Y-m-d' }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">Download</a></span>
-    <a href="{% url 'manual_attendance' course.course_id %}" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded shadow">Manual Record</a></span>
+    <a href="{% url 'teacherattendance' course.course_id %}" class="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold px-6 py-2 rounded shadow">View Your Attendance</a></span>
+    <a href="{% url 'teacher_classlist' course.course_id %}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded shadow">Class List</a></span>
+    <a href="{% url 'students_monthly_attendance' course.course_id %}?day_date={{ form.cleaned_data.day_date|date:'Y-m-d' }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded shadow">Download</a></span>
+    <a href="{% url 'manual_attendance' course.course_id %}" class="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded shadow">Manual Record</a></span>
     </div>
 
 <script>

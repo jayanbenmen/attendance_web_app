@@ -29,7 +29,7 @@
             <li><a href="{% url 'admin:index' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition" target="_blank">Admin Hub</a></li>
             <li><a href="{% url 'admincourses' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Courses</a></li>
             <li><a href="{% url 'adminrooms' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Rooms</a></li>
-            <li><a href="{% url 'nfcuid' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UID</a></li>
+            <li><a href="{% url 'nfcuid' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UIDs</a></li>
             <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Logout</a></li>
         </ul>
     </div>
@@ -44,7 +44,7 @@
           style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
         <div class="relative z-10">
             
-            <!-- Student Info -->
+            <!-- Course Info -->
             <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">
                 <h1 class="font-bold text-xl sm:text-2xl text-center mb-4">Students List for {{ course.course_title }} {{ course.section }}</h1>
                 <p class="font-bold text-md sm:text-lg text-center mb-2">{{ course.teacher.first_name }} {{ course.teacher.last_name }}</p>
@@ -71,7 +71,7 @@
         {% if students %}
         <div class="overflow-x-auto max-h-[600px] mb-8">
             <table class="w-full bg-white shadow-lg rounded-lg text-left">        
-                <thead class="bg-gray-800 text-white">
+                <thead class="bg-gray-800 text-white uppercase">
                     <tr>
                         <th class="w-1/4 px-4 py-2 text-left align-middle">ID Number</th>
                         <th class="w-1/4 px-4 py-2 text-left align-middle">Name</th>
@@ -89,7 +89,7 @@
                 </tbody>
             </table>
             {% else %}
-            <div>No enrolled students at the moment.</div>
+            <div class="bg-white bg-opacity-90 text-center text-gray-800 font-semibold  italic sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">No enrolled students at the moment.</div>
             {% endif %}
             <br>
     {% comment %} <ul>

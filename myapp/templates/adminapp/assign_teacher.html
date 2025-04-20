@@ -1,53 +1,92 @@
+{% load static tailwind_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{course.course_title}} {{ course.section }} Attendance</title>
+    {% tailwind_css %}
 </head>
-<body>
-    <h1>Assign a Teacher for {{ course.course_title }} {{ course.section }}</h1>
-    <p>{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
-    <p>{{ course.room.room_name }}</p>
+
+<body class="flex flex-col md:flex-row min-h-screen bg-gray-100">
+    
+    <!-- Sidebar -->
+    <div id="sidebar" class="w-full md:w-60 bg-[#22313f] text-white p-6 md:p-8 flex flex-col md:relative top-0 left-0 z-50 md:block hidden shadow-lg">
+        <div class="bg-gray-800 text-center py-2 rounded mb-2">
+            <p class="text-lg font-semibold">Ateneo de Naga University</p>
+        </div>
+        <img src="{% static 'images/adnu_logo.png' %}" alt="Profile Icon" class="w-24 h-24 md:w-32 md:h-32 rounded-full mx-auto border border-gray-300 shadow-md mt-4 mb-6">
+        <h2 class="text-center text-4xl font-bold mb-2 md:mb-6">Courses</h2>
+
+        {% if user.is_authenticated %}
+            <p class="text-center font-bold text-xl md:text-[20px]">Welcome, Admin {{ user.first_name }}!</p>
+        {% else %}
+            <p class="text-center text-lg">Welcome, Guest!</p>
+        {% endif %}
+
+        <ul class="mt-6 md:mt-10 space-y-6 mb-4 flex-grow">
+            <li><a href = "{% url 'admin:index' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition" target="_blank">Admin Hub</a></li>
+            <li><a href = "{% url 'admincourses' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Courses</a></li>
+            <li><a href = "{% url 'adminrooms' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Rooms</a></li>
+            <li><a href = "{% url 'nfcuid' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UIDs</a></li>
+
+            <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">Logout</a></li>
+        </ul>            
+    </div>
+
+    <!-- Button to toggle sidebar visibility on small screens -->
+    <button id="toggle-sidebar" class="md:hidden p-4 bg-gray-800 text-white fixed top-4 left-4 z-50 rounded-full shadow-md transition hover:bg-gray-700">
+        ☰
+    </button>
+
+    <!-- Main Content -->
+    <div class="relative flex-1 p-4 sm:p-6 overflow-hidden before:absolute before:inset-0 before:bg-black before:opacity-50"
+          style="background-image: url('{% static 'images/pillars.jpg' %}'); background-size: cover; background-position: center;">
+          <div class="relative z-10 max-w-6xl mx-auto">
+            
+            <!-- Course Info -->
+            <div class="font-semibold text-gray-800 bg-white bg-opacity-90 p-6 sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">
+                <h1 class="font-bold text-xl sm:text-2xl text-center mb-4">Assign a Teacher for {{ course.course_title }} {{ course.section }}</h1>
+                <p class="font-bold text-md sm:text-lg text-center mb-2">{{ course.schedule_day }} {{ course.start_time }} - {{ course.end_time }}</p>
+                <p class="font-bold text-md sm:text-lg text-center">{{ course.room.room_name }}</p>
+            </div>
+
     
     <form id = "assign_form" method = "POST">
         {% csrf_token %}
         {% if teachers %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>ID Number</th>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
+        <div class="overflow-x-auto max-h-[600px] mb-10">
+            <table class="min-w-full table-auto bg-white shadow-md rounded-lg overflow-hidden">     
+                <thead class="bg-gray-800 text-white">
+                    <tr>
+                        <th class="w-1/4 px-4 py-2 uppercase text-left align-middle">ID Number</th>
+                        <th class="w-1/4 px-4 py-2 uppercase text-left align-middle">Name</th>
+                        <th class="w-1/4 px-4 py-2 uppercase text-center align-middle">Select</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for teacher in teachers %}
-                <tr>
-                    <td>{{ teacher.teacher_id }}</td>
-                    <td>{{ teacher.first_name }} {{ teacher.last_name }}</td>
-                    <td><input type="radio" name="inteacherid" value="{{ teacher.teacher_id }}" id="teacher-{{ teacher.teacher_id }}" /></td>
+                <tr class="border-t text-gray-800">
+                    <td class="font-semibold px-4 py-2 text-left align-middle">{{ teacher.teacher_id }}</td>
+                    <td class="font-semibold px-4 py-2 text-left align-middle">{{ teacher.first_name }} {{ teacher.last_name }}</td>
+                    <td class="font-semibold px-4 py-2 text-left align-middle">
+                        <div class="flex items-center justify-center h-full">
+                            <input type="radio" name="inteacherid" value="{{ teacher.teacher_id }}" id="teacher-{{ teacher.teacher_id }}" class="h-4 w-4 text-blue-600" />
+                        </div>
+                    </td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% else %}
-            <div>No registered teachers</div>
+        <div class="bg-white bg-opacity-90 text-center text-gray-800 font-semibold  italic sm:p-4 rounded-lg shadow-lg w-full max-w-3xl mx-auto mb-6">No registered teachers.</div>
         {% endif %}
-        <br>
-        <button type="button" class="btn btn-success" id="assignTeacherBtn" onclick="confirmAssignment()">Assign Teacher</button>
+        </div>
+        <div class="flex flex-wrap gap-4 justify-center mt-4 mb-8">
+            <button type="button" class="border-2 border-black bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow" id="assignTeacherBtn" onclick="confirmAssignment()">Assign Teacher</button>
+        </div>    
     </form>
-
-    <br>
-    <br>
-    <span><a href = "{% url 'admin:index' %}" target="_blank">Admin Hub</a></span><br>
-    <span><a href = "{% url 'admincourses' %}">Courses</a></span><br>
-    <span><a href = "{% url 'adminrooms' %}">Rooms</a></span><br>
-    <span><a href = "{% url 'nfcuid' %}">NFC UID</a></span><br>
-    <br>
-    
-    <span><a href = "{% url 'logout' %}">Logout</a></span>
-</body>
-</html>
 
 <script type="text/javascript">
     function confirmAssignment() {
@@ -70,4 +109,16 @@
             return false;
         }
     }
+
+    // Sidebar toggle
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+    });
 </script>
+
+</body>
+</html>
+

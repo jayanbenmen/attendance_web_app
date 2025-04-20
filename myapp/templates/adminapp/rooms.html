@@ -30,7 +30,7 @@
             <li><a href = "{% url 'admin:index' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition" target="_blank">Admin Hub</a></li>
             <li><a href = "{% url 'admincourses' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Courses</a></li>
             <li><a href = "{% url 'adminrooms' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">Rooms</a></li>
-            <li><a href = "{% url 'nfcuid' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UID</a></li>
+            <li><a href = "{% url 'nfcuid' %}" class="block px-4 py-3 text-xl  md:px-3 md:py-2 md:text-xl rounded hover:bg-gray-700 transition">NFC UIDs</a></li>
 
             <li><a href="{% url 'logout' %}" class="block px-4 py-3 text-xl md:px-3 md:py-2 md:text-xl  rounded hover:bg-gray-700 transition">Logout</a></li>
         </ul>            
@@ -79,16 +79,16 @@
         {% endfor %}
     </div>
         {% else %}
-    <p class="text-white text-center text-lg">No rooms available.</p>
+    <div class="flex justify-center items-center min-h-[300px]">
+        <div class="bg-white text-gray-700  italic font-bold text-center px-8 py-8 rounded-xl shadow-lg text-lg w-full max-w-md">No rooms available.</div>
+    </div>
     {% endif %}
       
 <!-- Open the modal using ID.showModal() method -->
 <dialog id="add_room_modal" class="modal">
   <div id = "add_room_content" class="modal-box">
-
   </div>
   <form method="dialog" class="modal-backdrop">
-  
   </form>
 </dialog>
 
