@@ -77,7 +77,11 @@ urlpatterns = [
 
     # CSV
     path('students_monthly_attendance/<int:course_id>/', views.students_monthly_attendance, name = 'students_monthly_attendance'),
+    path('teacher_monthly_attendance/<int:course_id>/', views.teacher_monthly_attendance, name = 'teacher_monthly_attendance'),   
     path('monthly_room_logs/<int:room_id>/', views.monthly_room_logs, name = 'monthly_room_logs'),
+
+    path('teacher_csv/<int:course_id>/', views.teacher_csv, name = 'teacher_csv'),
+    path('student_csv/<int:course_id>/', views.student_csv, name = 'student_csv'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

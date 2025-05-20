@@ -124,7 +124,7 @@ def inteacher(request):
         outusertype = "teacher"
 
         errors = []
-        id_pattern = r'^HR20\d{7}$'
+        id_pattern = r'^HR\d{9}$'
 
         if outteacherid == '' or outfirstname == '' or outlastname == '' or outemail == '' or outpw1 == '' or outpw2 == '' or outnfcuid == '':
             errors.append('Missing required fields')
@@ -420,6 +420,7 @@ def manual_attendance(request, course_id):
     current_date = current_datetime.date()
     current_time = current_datetime.time()
     current_day = current_datetime.strftime('%A')
+    start_time = course.start_time
     end_time = course.end_time
 
     day_mapping = {
@@ -437,17 +438,17 @@ def manual_attendance(request, course_id):
         outstudentid = request.POST.get('instudentid')
         outstatus = request.POST.get('instatus')
         if course.schedule_day in day_mapping[current_day]:
-            if course.start_time <= current_time <= course.end_time:
-                attendance_exists = StudentAttendance.objects.filter(day_date = current_date, student_id = outstudentid, course_id = course.course_id)
-                if attendance_exists:
-                    errors.append('Attendance for student already exists')
-                else:
-                    ma = ManualAttendance(day_date = current_date, time_in = current_time, time_out = end_time, status = outstatus, course_id = course.course_id, room_id = course.room_id, student_id = outstudentid, is_synced = 1)
-                    sa = StudentAttendance(day_date = current_date, time_in = current_time, time_out = end_time, status = outstatus, course_id = course.course_id, room_id = course.room_id, student_id = outstudentid, is_synced = 1)
-                    ma.save()
-                    sa.save()
+            # if course.start_time <= current_time <= course.end_time:
+            attendance_exists = StudentAttendance.objects.filter(day_date = current_date, student_id = outstudentid, course_id = course.course_id)
+            if attendance_exists:
+                errors.append('Attendance for student already exists')
             else:
-                errors.append('Must record attendance during class hours only')
+                ma = ManualAttendance(day_date = current_date, time_in = start_time, time_out = end_time, status = outstatus, course_id = course.course_id, room_id = course.room_id, student_id = outstudentid, is_synced = 1)
+                sa = StudentAttendance(day_date = current_date, time_in = start_time, time_out = end_time, status = outstatus, course_id = course.course_id, room_id = course.room_id, student_id = outstudentid, is_synced = 1)
+                ma.save()
+                sa.save()
+            # else:
+                # errors.append('Must record attendance during class hours only')
         else:
             errors.append('Must record attendance during scheduled days only')
 
@@ -920,6 +921,72 @@ def students_monthly_attendance(request, course_id):
         time_in_formatted = record.time_in.strftime('%H:%M:%S') if record.time_in else ''
         time_out_formatted = record.time_out.strftime('%H:%M:%S') if record.time_out else ''
         writer.writerow([record.day_date, full_name, time_in_formatted, time_out_formatted, record.status])
+
+    return response
+
+def teacher_monthly_attendance(request, course_id):
+    course = get_object_or_404(Courses, course_id=course_id)
+    date = datetime.now().date()
+    form = DateForm(request.GET or None, initial={'day_date': date})
+
+    if form.is_valid():
+        date = form.cleaned_data['day_date']
+
+    month = date.month
+    year = date.year
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="teacher_attendance_{month}_{year}_{course.course_code}_{course.section}.csv"'
+
+    monthly_records = TeacherAttendance.objects.filter(course = course, day_date__month = month, day_date__year = year)
+
+    writer = csv.writer(response)
+
+    writer.writerow(['Date', 'Time-in', 'Time-out', 'Status'])
+
+    for record in monthly_records:
+        time_in_formatted = record.time_in.strftime('%H:%M:%S') if record.time_in else ''
+        time_out_formatted = record.time_out.strftime('%H:%M:%S') if record.time_out else ''
+        writer.writerow([record.day_date, time_in_formatted, time_out_formatted, record.status])
+
+    return response
+
+def teacher_csv(request, course_id):
+    course = get_object_or_404(Courses, course_id=course_id)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="teacher_attendance_{course.course_code}_{course.section}.csv"'
+
+    teacher_records = TeacherAttendance.objects.filter(course = course)
+
+    writer = csv.writer(response)
+
+    writer.writerow(['Date', 'Time-in', 'Time-out', 'Status'])
+
+    for record in teacher_records:
+        time_in_formatted = record.time_in.strftime('%H:%M:%S') if record.time_in else ''
+        time_out_formatted = record.time_out.strftime('%H:%M:%S') if record.time_out else ''
+        writer.writerow([record.day_date, time_in_formatted, time_out_formatted, record.status])
+
+    return response
+
+def student_csv(request, course_id):
+    course = get_object_or_404(Courses, course_id=course_id)
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="student_attendance_{course.course_code}_{course.section}.csv"'
+
+    student = Students.objects.filter(user_id = request.user.id).first()
+    student_records = StudentAttendance.objects.filter(course = course, student = student)
+
+    writer = csv.writer(response)
+
+    writer.writerow(['Date', 'Time-in', 'Time-out', 'Status'])
+
+    for record in student_records:
+        time_in_formatted = record.time_in.strftime('%H:%M:%S') if record.time_in else ''
+        time_out_formatted = record.time_out.strftime('%H:%M:%S') if record.time_out else ''
+        writer.writerow([record.day_date, time_in_formatted, time_out_formatted, record.status])
 
     return response
 

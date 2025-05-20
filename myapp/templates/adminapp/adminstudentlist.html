@@ -137,14 +137,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
-</script>
-
-<script>
   document.addEventListener("htmx:beforeSwap", function (e) {
       if (e.detail.target.classList.contains("forms") && !e.detail.xhr.response){
           location.reload();
       }
   })
+
+// Sidebar toggle
+    const toggleButton = document.getElementById('toggle-sidebar');
+    const sidebar = document.getElementById('sidebar');
+  
+    toggleButton.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+    });
 </script>
 {% endblock %}
 </body>

@@ -57,6 +57,7 @@
                     <th class="px-4 py-3 text-left text-md font-semibold">Date</th>
                     <th class="px-4 py-3 text-left text-md font-semibold">Time-in</th>
                     <th class="px-4 py-3 text-left text-md font-semibold">Time-out</th>
+                    <th class="px-4 py-3 text-left text-md font-semibold">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,10 +66,15 @@
                     <td class="px-4 py-2 font-medium text-left align-middle">{{ record.day_date }}</td>
                     <td class="px-4 py-2 font-medium text-left align-middle">{{ record.time_in }}</td>
                     <td class="px-4 py-2 font-medium text-left align-middle">{{ record.time_out }}</td>
+                    <td class="px-4 py-2 font-bold {% if record.status == 'On Time' %}text-green-600{% else %}text-red-600{% endif %}">{{ record.status }}</td>
                 </tr>
             {% endfor %} 
         </tbody>
     </table>
+    </div>
+    <div class="text-center">
+        <a href="{% url 'teacher_csv' course.course_id %}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded shadow">Download</a>
+    </div>
     <br>
     {% else %}
     <div class="flex justify-center items-center min-h-[300px]">
