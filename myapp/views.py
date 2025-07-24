@@ -465,7 +465,6 @@ def manual_attendance(request, course_id):
 def studenthome(request):
     student = Students.objects.filter(user_id=request.user.id).first()
     if not student:
-        # Handle case where student is not found
         return render(request, "studentapp/studenthome.html", {'error': 'Student not found'})
 
     form = CalendarForm(request.POST or None)
@@ -480,23 +479,19 @@ def studenthome(request):
     
     _, num_days = monthrange(year, month)
 
-    # Generate the list of all dates for the current month
     dates = [datetime(year, month, day) for day in range(1, num_days + 1)]
     formatted_dates = [date.strftime('%Y-%m-%d') for date in dates]
 
-    # Pre-fetch all the attendance records in one query
     attendance_records = StudentAttendance.objects.filter(
         student=student,
         course__in=courses,
         day_date__in=formatted_dates
     )
 
-    # Create a dictionary to map attendance data by (course_id, date)
     attendance_dict = {}
     for record in attendance_records:
         attendance_dict[(record.course.course_id, record.day_date.strftime('%Y-%m-%d'))] = record.status
 
-    # Populate the attendance_data list by iterating over courses and dates
     for course in courses:
         for date in formatted_dates:
             status = attendance_dict.get((course.course_id, date), "")
@@ -506,7 +501,6 @@ def studenthome(request):
                 status = "L"
             elif status == "Absent":
                 status = "A"
-            # Add the attendance data to the list
             attendance_data.append({
                 'course_id': course.course_id,
                 'date': date,
@@ -524,17 +518,14 @@ def studenthome(request):
 @login_required(login_url = 'login')
 @allowed_users(allowed_roles=['teacher'])
 def teacherhome(request):
-    # Get teacher object directly without redundant queries
     teacher = Teachers.objects.filter(user_id=request.user.id).first()
     if not teacher:
-        # Handle the case where the teacher is not found (optional)
         return render(request, "teacherapp/teacherhome.html", {'error': 'Teacher not found'})
 
     form = CalendarForm(request.POST or None)
     courses = Courses.objects.filter(teacher_id=teacher.teacher_id)
     attendance_data = []
 
-    # Default to current month and year
     month = datetime.now().month
     year = datetime.now().year
 
@@ -543,23 +534,19 @@ def teacherhome(request):
     
     _, num_days = monthrange(year, month)
 
-    # Generate dates and formatted_dates for the month
     dates = [datetime(year, month, day) for day in range(1, num_days + 1)]
     formatted_dates = [date.strftime('%Y-%m-%d') for date in dates]
 
-    # Pre-fetch all teacher attendance records in one query
     attendance_records = TeacherAttendance.objects.filter(
         teacher=teacher,
         course__in=courses,
         day_date__in=formatted_dates
     )
 
-    # Create a dictionary to store attendance by (course_id, date)
     attendance_dict = {}
     for record in attendance_records:
         attendance_dict[(record.course.course_id, record.day_date.strftime('%Y-%m-%d'))] = record.status
 
-    # Populate the attendance_data list
     for course in courses:
         for date in formatted_dates:
             status = attendance_dict.get((course.course_id, date), "")
@@ -569,7 +556,6 @@ def teacherhome(request):
                 status = "L"
             elif status == "Absent":
                 status = "A"
-            # Add attendance data for this course and date to the list
             attendance_data.append({
                 'course_id': course.course_id,
                 'date': date,

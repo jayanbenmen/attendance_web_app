@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-%_bx8xe28t*z%r#*=ja7m0wu9r3uzos&q^)05mb!n-vuxx@7y+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
-ALLOWED_HOSTS = ['54.169.134.213', 'localhost', '127.0.0.1', 'nfc-sp.info']
+ALLOWED_HOSTS = ['3.0.94.73', 'localhost', '127.0.0.1', 'nfc-sp.info']
 
 # Application definition
 
@@ -106,7 +106,6 @@ DATABASES = {
         'PORT': '3306'
     }
 }
-"""
 
 DATABASES = {
     'default': {
@@ -118,7 +117,17 @@ DATABASES = {
         'PORT': '3306'
     }
 }
-
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'attendance_db',
+        'USER': 'django',
+        'PASSWORD': '021302021302',
+        'HOST': '52.77.233.186',
+        'PORT': '3306'
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
